@@ -19,7 +19,7 @@ TASK_CONFIGS: Dict[str, Dict[str, Any]] = {
         "required_hours": {"Math": 6.0, "Physics": 4.0, "Chemistry": 3.0},
         "days_until_exam": {"Math": 5, "Physics": 7, "Chemistry": 6},
         "hours_budget": 18.0,
-        "max_steps": 12,
+        "max_steps": 12,  # ~3 study sessions/day × 4 days before exams
         "priority_weights": {"Math": 1.2, "Physics": 1.0, "Chemistry": 0.9},
         "blocked_steps": [],
         "penalty_subjects": [],
@@ -35,7 +35,7 @@ TASK_CONFIGS: Dict[str, Dict[str, Any]] = {
         "required_hours": {"Math": 8.0, "Physics": 6.0, "Chemistry": 5.0, "Biology": 6.0},
         "days_until_exam": {"Math": 4, "Physics": 6, "Chemistry": 7, "Biology": 5},
         "hours_budget": 22.0,
-        "max_steps": 14,
+        "max_steps": 14,  # ~2 study sessions/day × 7 days, with disruptions
         "priority_weights": {"Math": 1.3, "Physics": 1.1, "Chemistry": 0.9, "Biology": 1.0},
         "blocked_steps": [6, 7],
         "penalty_subjects": ["Biology"],
@@ -51,7 +51,7 @@ TASK_CONFIGS: Dict[str, Dict[str, Any]] = {
         "required_hours": {"Math": 10.0, "Physics": 7.0, "Chemistry": 6.0, "Biology": 7.0, "History": 5.0},
         "days_until_exam": {"Math": 3, "Physics": 4, "Chemistry": 8, "Biology": 5, "History": 9},
         "hours_budget": 24.0,
-        "max_steps": 18,
+        "max_steps": 18,  # ~2 sessions/day × 9 days, harder scheduling required
         "priority_weights": {"Math": 1.5, "Physics": 1.2, "Chemistry": 0.8, "Biology": 1.0, "History": 0.6},
         "blocked_steps": [4, 5, 10, 11],
         "penalty_subjects": ["History", "Chemistry"],
@@ -67,7 +67,7 @@ TASK_CONFIGS: Dict[str, Dict[str, Any]] = {
         "required_hours": {"Math": 12.0, "Physics": 10.0, "Chemistry": 8.0, "Biology": 9.0, "History": 6.0, "Computer Science": 10.0},
         "days_until_exam": {"Math": 2, "Physics": 3, "Chemistry": 6, "Biology": 4, "History": 7, "Computer Science": 3},
         "hours_budget": 24.0,
-        "max_steps": 20,
+        "max_steps": 20,  # maximum sessions before all exams begin
         "priority_weights": {"Math": 1.8, "Physics": 1.5, "Chemistry": 0.9, "Biology": 1.2, "History": 0.5, "Computer Science": 1.6},
         "blocked_steps": [3, 4, 8, 9, 14, 15],
         "penalty_subjects": ["History", "Chemistry", "Biology"],
