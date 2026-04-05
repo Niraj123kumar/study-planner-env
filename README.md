@@ -15,13 +15,15 @@ tags:
 
 ## Demo
 
-**HF Space — Live and healthy:**
+### Live HF Space
+The environment is deployed and responding at https://ride4code-study-planner-env.hf.space
 
-![HF Space](docs/hf-space.png)
+![HF Space health endpoint returning status healthy](docs/hf-space.png)
 
-**Agent run — [START] [STEP] [END] logs:**
+### Agent Run
+Below is a real agent run showing the structured `[START]` `[STEP]` `[END]` log format required by the OpenEnv spec. The smart agent prioritises subjects by urgency, coverage gap, and fatigue level.
 
-![Agent Run](docs/agent-run.png)
+![Agent run showing START STEP END logs across easy medium and hard tasks](docs/agent-run.png)
 
 ## Why This Environment Exists
 
