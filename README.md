@@ -103,6 +103,20 @@ Each step reward is shaped by these components:
 This produces a dense reward signal across all steps, not just at episode end.
 
 ## Architecture
+
+The environment follows a simple client-server design:
+
+**inference.py** (OpenAI client / agent) calls `reset()`, `step()`, and `grade()` over HTTP.
+
+**FastAPI server** (`server/app.py`) handles requests and delegates to the environment core.
+
+**Environment core** (`server/study_planner_env_environment.py`) manages all state:
+- Fatigue system — reduces effective study hours on repeated sessions
+- Retention decay — knowledge fades if a subject is not reviewed
+- Dependency graph — Physics requires Math, Biology requires Chemistry
+- Mock exam engine — mid-episode exam reshuffles subject priorities
+- Synergy bonus — Math retention boosts Physics and CS rewards
+- Grader — scores final coverage between 0.0 and 1.0
 ┌─────────────────────────────────┐
 │        inference.py             │
 │   (OpenAI client / agent)       │
