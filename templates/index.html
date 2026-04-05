@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Study Planner — OpenEnv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/css/elite.css" />
+<script>window.ENV_URL = window.location.origin;</script>
+</head>
+<body>
+
+<div id="ambient-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">study<span>.</span>planner</span>
+  <span style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);">OpenEnv v0.1.0</span>
+  <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+    <div class="nav-status">
+      <div class="status-dot" id="health-dot"></div>
+      <span id="health-label">checking…</span>
+    </div>
+    <button class="nav-btn" id="theme-toggle" data-haptic onclick="window.appState.accessibility.toggleTheme()">◑ Light</button>
+    <button class="nav-btn" data-haptic onclick="window.appState.commandPalette.open()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      ⌘K
+    </button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <div class="section" style="padding-top:24px;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;">
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent);letter-spacing:0.1em;margin-bottom:10px;">OPENENV ENVIRONMENT</div>
+        <h1 style="margin-bottom:12px;">Study Planner<br><span style="color:var(--accent2);">Agent Env</span></h1>
+        <p style="max-width:480px;">An RL environment where agents allocate study hours across subjects to maximise exam coverage under time &amp; budget constraints.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+        <span style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);">accessibility mode</span>
+        <span id="a11y-badge" style="font-family:var(--font-mono);font-size:12px;background:var(--surface);border:0.5px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--text-secondary);">default</span>
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:40px;">
+      <div class="stat-card stagger-item" style="animation-delay:0ms;">
+        <div class="stat-label">Tasks</div>
+        <div class="stat-value">3</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">easy / medium / hard</div>
+      </div>
+      <div class="stat-card stagger-item" style="animation-delay:60ms;">
+        <div class="stat-label">Easy Score</div>
+        <div class="stat-value" style="color:var(--accent3);" id="score-easy">—</div>
+        <div class="score-bar-track" style="margin-top:8px;"><div class="score-bar-fill" id="bar-easy" style="background:var(--accent3);width:0%;"></div></div>
+      </div>
+      <div class="stat-card stagger-item" style="animation-delay:120ms;">
+        <div class="stat-label">Medium Score</div>
+        <div class="stat-value" style="color:var(--warn);" id="score-medium">—</div>
+        <div class="score-bar-track" style="margin-top:8px;"><div class="score-bar-fill" id="bar-medium" style="background:var(--warn);width:0%;"></div></div>
+      </div>
+      <div class="stat-card stagger-item" style="animation-delay:180ms;">
+        <div class="stat-label">Hard Score</div>
+        <div class="stat-value" style="color:var(--danger);" id="score-hard">—</div>
+        <div class="score-bar-track" style="margin-top:8px;"><div class="score-bar-fill" id="bar-hard" style="background:var(--danger);width:0%;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div class="section">
+    <div class="section-title">Tasks</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;">
+      <div class="task-card stagger-item" style="animation-delay:200ms;">
+        <span class="task-diff diff-easy">Easy</span>
+        <h3 style="margin-bottom:6px;">Basic Subject Allocation</h3>
+        <p style="font-size:12px;margin-bottom:16px;">3 subjects, comfortable 18h budget, no penalties. Ideal for learning basic allocation strategies.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+          <span style="font-size:11px;background:var(--surface);border:0.5px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text-secondary);">Math</span>
+          <span style="font-size:11px;background:var(--surface);border:0.5px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text-secondary);">Physics</span>
+          <span style="font-size:11px;background:var(--surface);border:0.5px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text-secondary);">Chemistry</span>
+        </div>
+        <button class="nav-btn" data-haptic style="width:100%;justify-content:center;" onclick="resetTask('easy')">▶ Reset Easy</button>
+      </div>
+      <div class="task-card stagger-item" style="animation-delay:260ms;">
+        <span class="task-diff diff-medium">Medium</span>
+        <h3 style="margin-bottom:6px;">Disruption Rescheduling</h3>
+        <p style="font-size:12px;margin-bottom:16px;">4 subjects, 20h budget. Study disruptions at steps 6–7 remove 2h without warning.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+          <span style="font-size:11px;background:var(--surface);border:0.5px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text-secondary);">Math</span>
+          <span style="font-size:11px;background:var(--surface);border:0.5px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text-secondary);">Physics</span>
+          <span style="font-size:11px;background:var(--surface);border:0.5px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text-secondary);">Chemistry</span>
+          <span style="font-size:11px;background:var(--surface);border:0.5px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text-secondary);">Biology</span>
+        </div>
+        <button class="nav-btn" data-haptic style="width:100%;justify-content:center;" onclick="resetTask('medium')">▶ Reset Medium</button>
+      </div>
+      <div class="task-card stagger-item" style="animation-delay:320ms;">
+        <span class="task-diff diff-hard">Hard</span>
+        <h3 style="margin-bottom:6px;">Full Week Optimisation</h3>
+        <p style="font-size:12px;margin-bottom:16px;">5 subjects, tight 24h budget, 4 disruptions, and over-study penalties for History &amp; Chemistry.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+          <span style="font-size:11px;background:var(--surface);border:0.5px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text-secondary);">Math</span>
+          <span style="font-size:11px;background:var(--surface);border:0.5px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text-secondary);">Physics</span>
+          <span style="font-size:11px;background:var(--surface);border:0.5px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text-secondary);">Chemistry</span>
+          <span style="font-size:11px;background:var(--surface);border:0.5px solid var(--border);border-radius:5px;padding:2px 8px;color:var(--text-secondary);">Biology</span>
+          <span style="font-size:11px;background:rgba(248,113,113,0.12);border:0.5px solid rgba(248,113,113,0.25);border-radius:5px;padding:2px 8px;color:var(--danger);">History ⚠</span>
+        </div>
+        <button class="nav-btn" data-haptic style="width:100%;justify-content:center;" onclick="resetTask('hard')">▶ Reset Hard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- API ENDPOINTS -->
+  <div class="section">
+    <div class="section-title">API Endpoints</div>
+    <div class="glass-card" style="overflow:hidden;">
+      <div class="endpoint-row">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/health</span>
+        <span class="endpoint-desc">Health check</span>
+        <button class="nav-btn" data-haptic style="padding:4px 10px;font-size:11px;" onclick="testEndpoint('/health','GET')">Try</button>
+      </div>
+      <div class="endpoint-row">
+        <span class="badge badge-post">POST</span>
+        <span class="endpoint-path">/reset?task_id=easy</span>
+        <span class="endpoint-desc">Start episode</span>
+        <button class="nav-btn" data-haptic style="padding:4px 10px;font-size:11px;" onclick="testEndpoint('/reset?task_id=easy','POST')">Try</button>
+      </div>
+      <div class="endpoint-row">
+        <span class="badge badge-post">POST</span>
+        <span class="endpoint-path">/step</span>
+        <span class="endpoint-desc">Take action {"subject":"Math","hours":2}</span>
+        <button class="nav-btn" data-haptic style="padding:4px 10px;font-size:11px;" onclick="testStep()">Try</button>
+      </div>
+      <div class="endpoint-row">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/grade</span>
+        <span class="endpoint-desc">Final score 0.0–1.0</span>
+        <button class="nav-btn" data-haptic style="padding:4px 10px;font-size:11px;" onclick="testEndpoint('/grade','GET')">Try</button>
+      </div>
+      <div class="endpoint-row">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/state</span>
+        <span class="endpoint-desc">Current state</span>
+        <button class="nav-btn" data-haptic style="padding:4px 10px;font-size:11px;" onclick="testEndpoint('/state','GET')">Try</button>
+      </div>
+      <div class="endpoint-row">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/docs</span>
+        <span class="endpoint-desc">Interactive Swagger UI</span>
+        <button class="nav-btn" data-haptic style="padding:4px 10px;font-size:11px;" onclick="window.open('/docs','_blank')">Open</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESPONSE VIEWER -->
+  <div class="section">
+    <div class="section-title">Response</div>
+    <div class="glass-card" style="padding:0;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:0.5px solid var(--border);">
+        <span id="resp-method" style="font-size:11px;font-family:var(--font-mono);color:var(--text-dim);">—</span>
+        <span id="resp-path" style="font-size:12px;font-family:var(--font-mono);color:var(--text-secondary);flex:1;">waiting…</span>
+        <span id="resp-status" style="font-size:11px;font-family:var(--font-mono);color:var(--text-dim);"></span>
+      </div>
+      <pre id="resp-body" style="padding:16px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);line-height:1.7;overflow-x:auto;min-height:80px;white-space:pre-wrap;word-break:break-word;">// Click "Try" on any endpoint above</pre>
+    </div>
+  </div>
+
+  <!-- COMMAND PALETTE HINT -->
+  <div class="section">
+    <div class="glass-card" style="padding:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:200px;">
+        <h3 style="margin-bottom:6px;">Command Palette</h3>
+        <p style="font-size:13px;">Search commands, reset tasks, toggle accessibility modes, or type natural language like <em style="color:var(--accent);">"reset medium"</em> or <em style="color:var(--accent2);">"focus mode on"</em></p>
+      </div>
+      <button class="nav-btn" data-haptic style="padding:10px 20px;font-size:14px;" onclick="window.appState.commandPalette.open()">
+        Open ⌘K
+      </button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="border-top:0.5px solid var(--border);padding-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <span style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);">study_planner_env v0.1.0 · OpenEnv</span>
+    <a href="/docs" style="font-size:11px;color:var(--accent);text-decoration:none;font-family:var(--font-mono);">API Docs →</a>
+  </div>
+
+</main>
+
+<!-- SCRIPTS -->
+<script src="/static/js/app-state.js"></script>
+<script src="/static/js/command-registry.js"></script>
+<script src="/static/js/command-parser.js"></script>
+<script src="/static/js/command-palette.js"></script>
+<script src="/static/js/ambient-background.js"></script>
+<script src="/static/js/accessibility.js"></script>
+<script src="/static/js/micro-interactions.js"></script>
+
+<script>
+const ENV = window.location.origin;
+
+async function checkHealth() {
+  try {
+    const r = await fetch(ENV + '/health');
+    const ok = r.ok;
+    document.getElementById('health-dot').style.background = ok ? 'var(--accent3)' : 'var(--danger)';
+    document.getElementById('health-label').textContent = ok ? 'healthy' : 'error';
+    document.getElementById('health-label').style.color = ok ? 'var(--accent3)' : 'var(--danger)';
+  } catch { 
+    document.getElementById('health-dot').style.background = 'var(--danger)';
+    document.getElementById('health-label').textContent = 'offline';
+    document.getElementById('health-label').style.color = 'var(--danger)';
+  }
+}
+
+async function testEndpoint(path, method) {
+  document.getElementById('resp-method').textContent = method;
+  document.getElementById('resp-path').textContent = path;
+  document.getElementById('resp-body').textContent = '// loading…';
+  try {
+    const r = await fetch(ENV + path, { method });
+    const d = await r.json();
+    document.getElementById('resp-status').textContent = r.status;
+    document.getElementById('resp-body').textContent = JSON.stringify(d, null, 2);
+  } catch(e) { document.getElementById('resp-body').textContent = '// Error: ' + e.message; }
+}
+
+async function testStep() {
+  document.getElementById('resp-method').textContent = 'POST';
+  document.getElementById('resp-path').textContent = '/step';
+  document.getElementById('resp-body').textContent = '// loading…';
+  try {
+    const r = await fetch(ENV + '/step', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subject: 'Math', hours: 2.0 })
+    });
+    const d = await r.json();
+    document.getElementById('resp-status').textContent = r.status;
+    document.getElementById('resp-body').textContent = JSON.stringify(d, null, 2);
+  } catch(e) { document.getElementById('resp-body').textContent = '// Error: ' + e.message; }
+}
+
+async function resetTask(taskId) {
+  try {
+    const r = await fetch(ENV + '/reset?task_id=' + taskId, { method: 'POST' });
+    const d = await r.json();
+    window.showToast('✓ Task "' + taskId + '" ready — budget: ' + d.observation?.total_hours_left + 'h', 'success');
+    setTimeout(() => loadScores(), 500);
+  } catch(e) { window.showToast('Connection error', 'error'); }
+}
+
+async function loadScores() {
+  const tasks = ['easy','medium','hard'];
+  for (const t of tasks) {
+    try {
+      await fetch(ENV + '/reset?task_id=' + t, { method: 'POST' });
+      const r = await fetch(ENV + '/grade');
+      const d = await r.json();
+      const score = d.score ?? 0;
+      const el = document.getElementById('score-' + t);
+      const bar = document.getElementById('bar-' + t);
+      if (el) el.textContent = score.toFixed(2);
+      if (bar) bar.style.width = (score * 100).toFixed(1) + '%';
+    } catch {}
+  }
+}
+
+window.refreshDashboard = loadScores;
+checkHealth();
+loadScores();
+setInterval(checkHealth, 15000);
+</script>
+</body>
+</html>

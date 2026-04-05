@@ -1,0 +1,24 @@
+spec_version: 1
+name: study_planner_env
+type: space
+runtime: fastapi
+app: server.app:app
+port: 8000
+
+tasks:
+  - id: easy
+    name: Basic Subject Allocation
+    difficulty: easy
+    description: 3 subjects, 18h budget, no penalties, no retention decay. Learn basic allocation strategies.
+  - id: medium
+    name: Disruption Rescheduling
+    difficulty: medium
+    description: 4 subjects, 22h budget, disruptions at steps 6-7, retention decay 4% per idle step, mock exam at step 6.
+  - id: hard
+    name: Full Week Optimisation
+    difficulty: hard
+    description: 5 subjects, 26h budget, dependencies, exam surprise, retention decay 7%, mock exam, over-study penalties.
+  - id: extreme
+    name: Impossible Week
+    difficulty: extreme
+    description: 6 subjects, only 24h budget for 55h of required study, 6 disruptions, 10% retention decay, all subjects have dependencies. Max achievable score 0.65.
