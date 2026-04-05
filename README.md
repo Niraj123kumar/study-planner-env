@@ -13,6 +13,16 @@ tags:
 
 [![HF Space](https://img.shields.io/badge/🤗-Open%20in%20Spaces-blue)](https://huggingface.co/spaces/ride4code/study-planner-env) [![OpenEnv](https://img.shields.io/badge/OpenEnv-Compliant-green)](https://huggingface.co/spaces/ride4code/study-planner-env)
 
+## Demo
+
+**HF Space — Live and healthy:**
+
+![HF Space](docs/hf-space.png)
+
+**Agent run — [START] [STEP] [END] logs:**
+
+![Agent Run](docs/agent-run.png)
+
 ## Why This Environment Exists
 
 Study planning is one of the most universal human tasks, yet no existing OpenEnv environment models it. Unlike game-based benchmarks, this environment captures real cognitive constraints: knowledge decays without review, fatigue accumulates with repeated study, subject dependencies enforce learning order, and unexpected disruptions force dynamic replanning. An agent that performs well here has learned genuine scheduling intelligence — not just pattern matching. This fills a direct gap in the RL benchmark ecosystem.
