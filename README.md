@@ -89,6 +89,23 @@ The gap on medium (+0.33) demonstrates the reward signal is meaningful — a sma
 - **Exam Surprise**: One subject exam moves 2 days earlier unexpectedly
 - **Session Types**: new_material, review, practice — each with different fatigue/retention tradeoffs
 
+## Reward Function
+
+Each step reward is shaped by these components:
+
+- **Urgency** — subjects with exams sooner receive higher weight
+- **Coverage need** — subjects further from full coverage receive higher weight
+- **Session bonus** — practice gives 1.3x, review 1.1x, new_material 1.0x
+- **Fatigue penalty** — repeated study reduces effective hours and reward
+- **Synergy bonus** — studying Math boosts Physics/CS, Chemistry boosts Biology
+- **Penalty subjects** — over-studying History or Chemistry incurs a penalty
+
+This produces a dense reward signal across all steps, not just at episode end.
+
+## Architecture
+
+The environment runs as a FastAPI server. The inference script uses the OpenAI client to call reset() and step() endpoints. The environment core manages fatigue, retention decay, dependency graphs, and mock exams. The grader scores the final state between 0.0 and 1.0.
+
 ## Setup
 ```bash
 uv sync
