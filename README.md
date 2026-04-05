@@ -110,36 +110,7 @@ The environment follows a simple client-server design:
 
 **FastAPI server** (`server/app.py`) handles requests and delegates to the environment core.
 
-**Environment core** (`server/study_planner_env_environment.py`) manages all state:
-- Fatigue system — reduces effective study hours on repeated sessions
-- Retention decay — knowledge fades if a subject is not reviewed
-- Dependency graph — Physics requires Math, Biology requires Chemistry
-- Mock exam engine — mid-episode exam reshuffles subject priorities
-- Synergy bonus — Math retention boosts Physics and CS rewards
-- Grader — scores final coverage between 0.0 and 1.0
-┌─────────────────────────────────┐
-│        inference.py             │
-│   (OpenAI client / agent)       │
-└────────────┬────────────────────┘
-│ reset() / step() / grade()
-▼
-┌─────────────────────────────────┐
-│     FastAPI Server              │
-│     server/app.py               │
-└────────────┬────────────────────┘
-│
-▼
-┌─────────────────────────────────┐
-│     Environment Core            │
-│  study_planner_env_environment  │
-│                                 │
-│  ├── Fatigue system             │
-│  ├── Retention decay            │
-│  ├── Dependency graph           │
-│  ├── Mock exam engine           │
-│  ├── Synergy bonus              │
-│  └── Grader (0.0 → 1.0)        │
-└─────────────────────────────────┘
+**Environment core** (`server/study_planner_env_environment.py`) manages all state including fatigue, retention decay, dependency graph, mock exam engine, synergy bonus, and the final grader that scores between 0.0 and 1.0.
 
 ## Setup
 ```bash
@@ -174,3 +145,4 @@ An interactive dashboard is available at `/web` — try it live at https://ride4
 - `GET /grade` — final score (0.0-1.0)
 - `GET /state` — current state
 - `GET /web` — web UI
+
