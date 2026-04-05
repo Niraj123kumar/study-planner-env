@@ -103,8 +103,29 @@ Each step reward is shaped by these components:
 This produces a dense reward signal across all steps, not just at episode end.
 
 ## Architecture
-
-The environment runs as a FastAPI server. The inference script uses the OpenAI client to call reset() and step() endpoints. The environment core manages fatigue, retention decay, dependency graphs, and mock exams. The grader scores the final state between 0.0 and 1.0.
+┌─────────────────────────────────┐
+│        inference.py             │
+│   (OpenAI client / agent)       │
+└────────────┬────────────────────┘
+│ reset() / step() / grade()
+▼
+┌─────────────────────────────────┐
+│     FastAPI Server              │
+│     server/app.py               │
+└────────────┬────────────────────┘
+│
+▼
+┌─────────────────────────────────┐
+│     Environment Core            │
+│  study_planner_env_environment  │
+│                                 │
+│  ├── Fatigue system             │
+│  ├── Retention decay            │
+│  ├── Dependency graph           │
+│  ├── Mock exam engine           │
+│  ├── Synergy bonus              │
+│  └── Grader (0.0 → 1.0)        │
+└─────────────────────────────────┘
 
 ## Setup
 ```bash
