@@ -24,13 +24,13 @@ client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
 
 
 def log_start(task, env, model):
-    print(f"START
+    print("START")
 
 def log_step(step, action, reward, done, error):
-    print(f"STEP: step={step} action={json.dumps(action)} reward={reward:.2f} done={str(done).lower()} error={error or 'null'}", flush=True)
+    print("STEP: running")
 
 def log_end(success, steps, score, rewards):
-    print(f"END
+    print("END")
 
 
 def build_prompt(obs: dict) -> str:
