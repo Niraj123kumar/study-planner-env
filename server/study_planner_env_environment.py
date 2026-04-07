@@ -267,8 +267,8 @@ class StudyPlannerEnvironment(Environment):
 
     def grade(self) -> float:
         if self._final_score is not None:
-            return round(self._final_score, 4)
-        return round(self._compute_final_score(), 4)
+            return float(max(0.01, min(0.99, round(self._final_score, 4))))
+        return float(max(0.01, min(0.99, round(self._compute_final_score(), 4))))
 
     @property
     def state(self) -> State:
