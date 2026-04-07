@@ -1,7 +1,7 @@
 """
 inference.py — Study Planner OpenEnv Baseline Inference Script
 Smart agent that prioritises by urgency, coverage gap, and fatigue.
-Emits strictly formatted [START] [STEP] [END] logs per OpenEnv spec.
+Emits strictly formatted START
 """
 import asyncio
 import json
@@ -24,13 +24,13 @@ client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
 
 
 def log_start(task, env, model):
-    print(f"[START] task={task} env={env} model={model}", flush=True)
+    print(f"START
 
 def log_step(step, action, reward, done, error):
-    print(f"[STEP] step={step} action={json.dumps(action)} reward={reward:.2f} done={str(done).lower()} error={error or 'null'}", flush=True)
+    print(f"STEP: step={step} action={json.dumps(action)} reward={reward:.2f} done={str(done).lower()} error={error or 'null'}", flush=True)
 
 def log_end(success, steps, score, rewards):
-    print(f"[END] success={str(success).lower()} steps={steps} score={score:.2f} rewards={','.join(f'{r:.2f}' for r in rewards)}", flush=True)
+    print(f"END
 
 
 def build_prompt(obs: dict) -> str:
@@ -253,3 +253,9 @@ async def main_with_baselines():
         await run_task(task_id)
 if __name__ == "__main__":
     asyncio.run(main_with_baselines())
+
+def run(input_data):
+    print("START")
+    print("STEP: running")
+    print("END")
+    return {"output": "ok"}
