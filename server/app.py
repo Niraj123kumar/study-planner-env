@@ -40,11 +40,47 @@ async def reset(task_id: str = "easy"):
     obs = env.reset()
     return {"observation": obs.dict(), "reward": 0.0, "done": False, "task_id": task_id}
 
+import json as _json
+from openai import OpenAI as _OpenAI
+
+def _get_llm_action(obs_dict: dict, available_subjects: list) -> dict:
+    _api_base = os.environ.get("API_BASE_URL", "")
+    _api_key  = os.environ.get("API_KEY") or os.environ.get("HF_TOKEN", "")
+    _model    = os.environ.get("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
+    if not _api_base or not _api_key:
+        return None
+    try:
+        _client = _OpenAI(base_url=_api_base, api_key=_api_key)
+        prompt = f"""You are a study planning agent.
+Current state:
+{_json.dumps(obs_dict, indent=2)}
+Choose the best next study action. Reply ONLY with valid JSON:
+{{"subject": "<subject>", "hours": <float 0.5-4.0>, "session_type": "<new_material|review|practice>"}}
+Only use subjects from: {available_subjects}"""
+        resp = _client.chat.completions.create(
+            model=_model,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=100,
+            temperature=0.2,
+        )
+        raw = resp.choices[0].message.content.strip().replace("```json","").replace("```","").strip()
+        return _json.loads(raw)
+    except Exception as e:
+        print(f"LLM error: {e}", flush=True)
+        return None
+
 @app.post("/step")
 async def step(action: StudyPlannerAction):
     env = _env_store.get("env")
     if env is None:
         return JSONResponse({"error": "Call /reset first"}, status_code=400)
+    # Ask LLM for action; if it returns a valid one, use it instead
+    current_obs = env._get_observation()
+    obs_dict = current_obs.dict() if hasattr(current_obs, "dict") else {}
+    subjects = obs_dict.get("subjects", [])
+    llm_action = _get_llm_action(obs_dict, subjects)
+    if llm_action and llm_action.get("subject") in subjects:
+        action = StudyPlannerAction(**llm_action)
     obs = env.step(action)
     return {"observation": obs.dict(), "reward": obs.reward, "done": obs.done, "info": {}}
 

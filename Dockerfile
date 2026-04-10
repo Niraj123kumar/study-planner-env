@@ -9,7 +9,8 @@ RUN pip install --no-cache-dir \
     httpx \
     pydantic \
     jinja2 \
-    aiofiles
+    aiofiles \
+    openai
 
 COPY models.py .
 COPY __init__.py .
