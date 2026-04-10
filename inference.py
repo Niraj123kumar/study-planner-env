@@ -12,14 +12,14 @@ from openai import OpenAI
 from models import StudyPlannerAction
 from server.study_planner_env_environment import StudyPlannerEnvironment
 
-API_KEY      = os.getenv("HF_TOKEN") or os.getenv("API_KEY")
-API_BASE_URL = os.getenv("API_BASE_URL") or "https://router.huggingface.co/v1"
+HF_TOKEN     = os.getenv("HF_TOKEN")
+API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME   = os.getenv("MODEL_NAME") or "Qwen/Qwen2.5-72B-Instruct"
 BENCHMARK    = "study-planner-env"
 TASKS        = ["easy", "medium", "hard"]
 MAX_STEPS    = 18
 
-client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
+client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
 
 def get_action(obs_dict: dict) -> dict:
     prompt = f"""You are a smart study planner agent.
