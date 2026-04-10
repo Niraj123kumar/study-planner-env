@@ -75,12 +75,22 @@ async def step(action: StudyPlannerAction):
     if env is None:
         return JSONResponse({"error": "Call /reset first"}, status_code=400)
     # Ask LLM for action; if it returns a valid one, use it instead
-    current_obs = env._get_observation()
-    obs_dict = current_obs.dict() if hasattr(current_obs, "dict") else {}
-    subjects = obs_dict.get("subjects", [])
-    llm_action = _get_llm_action(obs_dict, subjects)
-    if llm_action and llm_action.get("subject") in subjects:
-        action = StudyPlannerAction(**llm_action)
+    try:
+        subjects = env._cfg["subjects"]
+        allocated = env._allocated
+        required  = env._cfg["required_hours"]
+        obs_dict = {
+            "subjects": subjects,
+            "coverage_pct": {s: round(allocated[s] / max(required[s], 1), 3) for s in subjects},
+            "days_until_exam": dict(env._cfg["days_until_exam"]),
+            "fatigue_level": dict(env._fatigue),
+            "total_hours_left": env._hours_budget,
+        }
+        llm_action = _get_llm_action(obs_dict, subjects)
+        if llm_action and llm_action.get("subject") in subjects:
+            action = StudyPlannerAction(**llm_action)
+    except Exception as e:
+        print(f"LLM step error: {e}", flush=True)
     obs = env.step(action)
     return {"observation": obs.dict(), "reward": obs.reward, "done": obs.done, "info": {}}
 
