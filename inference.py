@@ -8,10 +8,12 @@ import os
 import httpx
 from openai import OpenAI
 
-API_BASE_URL = os.environ["API_BASE_URL"]
-API_KEY      = os.environ["API_KEY"]
-MODEL_NAME   = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
-ENV_URL      = os.getenv("ENV_URL", "http://localhost:8000")
+API_BASE_URL = os.environ.get("API_BASE_URL", "https://router.huggingface.co/v1")
+API_KEY      = os.environ.get("API_KEY") or os.environ.get("HF_TOKEN", "")
+MODEL_NAME   = os.environ.get("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
+ENV_URL      = os.environ.get("ENV_URL", "http://localhost:8000")
+
+print(f"DEBUG base_url={API_BASE_URL} key={API_KEY[:8]}... model={MODEL_NAME}", flush=True)
 
 TASKS     = ["easy", "medium", "hard"]
 MAX_STEPS = 18
